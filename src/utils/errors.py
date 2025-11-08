@@ -13,3 +13,10 @@ class RepositoryError(ConfigurationError):
 class DepthLimitError(ConfigurationError):
     """Ошибка: превышена глубина анализа"""
     pass
+class NetworkError(RepositoryError):
+    """Ошибка сети при доступе к репозиторию"""
+    pass
+
+class APKIndexParseError(RepositoryError):
+    """Ошибка парсинга APKINDEX"""
+    pass

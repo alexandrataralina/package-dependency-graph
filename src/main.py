@@ -7,6 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from src.utils.config import Config
 from src.utils.errors import ConfigurationError
+from src.utils.repository import RepositoryManager
 
 def main():
     """Основная функция приложения"""
@@ -18,17 +19,25 @@ def main():
         # Вывод конфигурации (требование этапа 1)
         config.display_config()
         
-        # Здесь в следующих этапах будет основная логика
-        print(f"\nАнализ пакета: {config.package_name}")
+        # Создаем менеджер репозитория
+        repo_manager = RepositoryManager(
+            repository_url=config.repository_url,
+            test_mode=config.test_mode,
+            test_repo_path=config.test_repo_path
+        )
         
-        if config.test_mode:
-            print("Режим: ТЕСТИРОВАНИЕ")
-            print(f"Используется тестовый файл: {config.test_repo_path}")
+        # Получаем прямые зависимости (требование этапа 2)
+        print(f"\nПолучение прямых зависимостей для пакета: {config.package_name}")
+        
+        dependencies = repo_manager.get_package_dependencies(config.package_name)
+        
+        # Выводим прямые зависимости (требование этапа 2)
+        print(f"Прямые зависимости пакета '{config.package_name}':")
+        if dependencies:
+            for i, dep in enumerate(dependencies, 1):
+                print(f"  {i}. {dep}")
         else:
-            print("Режим: РАБОЧИЙ")
-            print(f"Используется репозиторий: {config.repository_url}")
-            
-        print(f"Максимальная глубина анализа: {config.max_depth}")
+            print("  (нет зависимостей)")
         
     except ConfigurationError as e:
         print(f"Ошибка конфигурации: {e}", file=sys.stderr)
@@ -42,3 +51,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+        
+        
+        
