@@ -9,6 +9,7 @@ class Config:
         self.test_mode = False
         self.test_repo_path = None
         self.ascii_tree = False
+        self.install_order = False
         self.max_depth = None
         
     def parse_arguments(self):
@@ -35,7 +36,7 @@ class Config:
             '--test-mode',
             '-t',
             action='store_true',
-            help='Режим работы с тестовым репозиторием'
+            help='Режим работы с тестового репозитория'
         )
         
         parser.add_argument(
@@ -43,6 +44,13 @@ class Config:
             '-a',
             action='store_true',
             help='Вывод зависимостей в формате ASCII-дерева'
+        )
+        
+        parser.add_argument(
+            '--install-order',
+            '-i',
+            action='store_true',
+            help='Вывести порядок загрузки зависимостей'
         )
         
         parser.add_argument(
@@ -83,6 +91,7 @@ class Config:
             self.repository_url = args.repository
             self.test_mode = args.test_mode
             self.ascii_tree = args.ascii_tree
+            self.install_order = args.install_order
             self.max_depth = args.max_depth
             
             # Если включен тестовый режим, repository_url становится путем к файлу
@@ -105,4 +114,5 @@ class Config:
         print(f"  Режим тестирования: {self.test_mode}")
         print(f"  Путь к тестовому репозиторию: {self.test_repo_path}")
         print(f"  Вывод ASCII-дерева: {self.ascii_tree}")
+        print(f"  Вывод порядка установки: {self.install_order}")
         print(f"  Максимальная глубина: {self.max_depth}")

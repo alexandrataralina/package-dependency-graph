@@ -56,7 +56,20 @@ def main():
         if config.ascii_tree:
             print(f"\nДерево зависимостей '{config.package_name}':")
             dependency_graph.print_ascii_tree(config.package_name)
-        
+        # Вывод порядка установки если включен режим
+        if config.install_order:
+            install_order = dependency_graph.get_install_order(config.package_name)
+            print(f"\n📦 Порядок установки зависимостей для '{config.package_name}':")
+            if install_order:
+                for i, pkg in enumerate(install_order, 1):
+                    depth = dependency_graph.depth_map.get(pkg, 0)
+                    marker = "🎯" if pkg == config.package_name else "📌"
+                    print(f"  {i}. {marker} {pkg} (глубина: {depth})")
+            else:
+                print("  (нет зависимостей)")
+            
+            # Сравнение с реальным менеджером
+            dependency_graph.compare_with_apk(config.package_name)        
         # Выводим статистику
         print(f"\n📊 Статистика графа:")
         print(f"  Всего узлов: {len(dependency_graph.graph)}")
