@@ -12,27 +12,32 @@ class DependencyGraph:
     def build_graph(self, root_package):
         """Построение графа зависимостей с помощью BFS"""
         queue = deque()
-        queue.append((root_package, 0))  # (package, depth)
+        queue.append((root_package, 0, []))  # (package, depth, path)
         self.graph = {}
         self.visited = set()
         self.depth_map = {root_package: 0}
         cycles = []
         
         while queue:
-            current_package, depth = queue.popleft()
+            current_package, depth, path = queue.popleft()
             
             # Проверка максимальной глубины
             if depth >= self.max_depth:
                 continue
                 
-            # Если пакет уже посещен на меньшей глубине, пропускаем
+            # Проверяем на циклические зависимости
+            if current_package in path:
+                cycle = path[path.index(current_package):] + [current_package]
+                if cycle not in cycles:
+                    cycles.append(cycle)
+                continue
+                
+            # Если пакет уже посещен, пропускаем
             if current_package in self.visited:
-                # Проверяем на циклические зависимости
-                if current_package in self.get_ancestors(current_package):
-                    cycles.append(current_package)
                 continue
                 
             self.visited.add(current_package)
+            current_path = path + [current_package]
             
             try:
                 # Получаем зависимости текущего пакета
@@ -43,7 +48,7 @@ class DependencyGraph:
                 for dep in dependencies:
                     if dep not in self.depth_map or self.depth_map[dep] > depth + 1:
                         self.depth_map[dep] = depth + 1
-                    queue.append((dep, depth + 1))
+                    queue.append((dep, depth + 1, current_path))
                     
             except Exception as e:
                 # Если не удалось получить зависимости, отмечаем как пустой список
