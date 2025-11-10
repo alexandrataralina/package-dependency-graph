@@ -9,6 +9,7 @@ from src.utils.config import Config
 from src.utils.errors import ConfigurationError
 from src.utils.repository import RepositoryManager
 from src.utils.dependency_graph import DependencyGraph
+from src.utils.visualizer import PlantUMLVisualizer
 
 def main():
     """Основная функция приложения"""
@@ -56,6 +57,7 @@ def main():
         if config.ascii_tree:
             print(f"\nДерево зависимостей '{config.package_name}':")
             dependency_graph.print_ascii_tree(config.package_name)
+        
         # Вывод порядка установки если включен режим
         if config.install_order:
             install_order = dependency_graph.get_install_order(config.package_name)
@@ -69,7 +71,26 @@ def main():
                 print("  (нет зависимостей)")
             
             # Сравнение с реальным менеджером
-            dependency_graph.compare_with_apk(config.package_name)        
+            dependency_graph.compare_with_apk(config.package_name)
+        
+        # Генерация PlantUML диаграммы если включен режим
+        if config.plantuml:
+            print(f"\n🎨 Генерация PlantUML диаграммы для '{config.package_name}'...")
+            visualizer = PlantUMLVisualizer(dependency_graph)
+            
+            # Генерируем упрощенную версию для лучшей читаемости
+            plantuml_code = visualizer.generate_simple_plantuml(config.package_name)
+            
+            # Выводим информацию о PlantUML коде
+            visualizer.display_plantuml_info()
+            
+            # Сохраняем в файл
+            filename = f"{config.package_name}_dependencies.puml"
+            visualizer.save_plantuml_to_file(filename)
+            
+            # Сравнение с штатными инструментами
+            visualizer.compare_with_apk_tools(config.package_name)
+        
         # Выводим статистику
         print(f"\n📊 Статистика графа:")
         print(f"  Всего узлов: {len(dependency_graph.graph)}")

@@ -10,6 +10,7 @@ class Config:
         self.test_repo_path = None
         self.ascii_tree = False
         self.install_order = False
+        self.plantuml = False
         self.max_depth = None
         
     def parse_arguments(self):
@@ -54,6 +55,13 @@ class Config:
         )
         
         parser.add_argument(
+            '--plantuml',
+            '-p',
+            action='store_true',
+            help='Сгенерировать PlantUML диаграмму зависимостей'
+        )
+        
+        parser.add_argument(
             '--max-depth',
             '-d',
             type=int,
@@ -92,6 +100,7 @@ class Config:
             self.test_mode = args.test_mode
             self.ascii_tree = args.ascii_tree
             self.install_order = args.install_order
+            self.plantuml = args.plantuml
             self.max_depth = args.max_depth
             
             # Если включен тестовый режим, repository_url становится путем к файлу
@@ -115,4 +124,5 @@ class Config:
         print(f"  Путь к тестовому репозиторию: {self.test_repo_path}")
         print(f"  Вывод ASCII-дерева: {self.ascii_tree}")
         print(f"  Вывод порядка установки: {self.install_order}")
+        print(f"  Генерация PlantUML: {self.plantuml}")
         print(f"  Максимальная глубина: {self.max_depth}")

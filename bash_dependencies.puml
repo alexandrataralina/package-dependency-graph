@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+skinparam nodesep 10
+skinparam ranksep 50
+skinparam packageStyle rect
+skinparam shadowing false
+
+rectangle "bash" as bash #LightBlue
+rectangle "/bin/sh" as _bin_sh
+rectangle "so:libc.musl-x86_64.so.1" as so_libc_musl-x86_64_so_1
+rectangle "so:libreadline.so.8" as so_libreadline_so_8
+
+bash --> _bin_sh
+bash --> so_libc_musl-x86_64_so_1
+bash --> so_libreadline_so_8
+@enduml

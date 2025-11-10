@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+skinparam nodesep 10
+skinparam ranksep 50
+skinparam packageStyle rect
+skinparam shadowing false
+
+rectangle "A" as A #LightBlue
+rectangle "B" as B
+rectangle "C" as C
+rectangle "D" as D
+rectangle "E" as E
+rectangle "F" as F
+
+A --> B
+A --> C
+B --> D
+C --> D
+C --> E
+E --> F
+@enduml
